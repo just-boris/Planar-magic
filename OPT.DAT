@@ -1,0 +1,8 @@
+/*
+obj       poz      diam       focal      appert
+*/
+S         -8       1           0           0  
+L         -4       10          4           0 
+L         0        5           10         0 
+L         3        10          +50           0 
+R         9.5       10          0           0 
