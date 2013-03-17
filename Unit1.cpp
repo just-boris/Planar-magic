@@ -101,12 +101,12 @@ void putpixel(int x, int y, TColor cl)
     }
 };
 
-//��������� ����� �����
+//Установка цвета линии
 void setcolor(TColor x)
 {
     if (Canva)    Canva->Pen->Color = x;
 };
-//���������� ����� �� ����� (x,y) � ����� (x1,y1)
+//Прорисовка линии из точки (x,y) в точку (x1,y1)
 void line(int x, int y, int x1, int y1)
 {
     if (Canva)
@@ -115,7 +115,7 @@ void line(int x, int y, int x1, int y1)
         Canva->LineTo(x1, y1);
     }
 };
-//����� ������ ������� � ����������� ��������� (x,y)
+//Вывод текста начиная с графических координат (x,y)
 void gprintf(int *x, int *y, char *s)
 {
     int x1, y1;
@@ -285,11 +285,11 @@ int ancip (char buf[], double digit[])
 
 void Lens(double F, XYZ V0, XYZ *v1, XYZ p)
 /*
- F-�������� �����., V0 - �������� �e����,
-    ������� �����
-  � ����� ����� p.x,p.y ���������� ��� �����
-  ��������� � ���� x,
-  V1 - ������, ��������� �� ����� (p.x,p.y)
+ F-фокусное расст., V0 - исходный вeктор,
+    который попал
+  в точку линзы p.x,p.y оптическая ось линзы
+  совпадает с осью x,
+  V1 - вектор, выходящий из точки (p.x,p.y)
 */
 {
     XYZ  V1;
@@ -402,9 +402,11 @@ double APRS(int M, double *C, double x, double t)
 
 
 //---------------------------------------------------------------------------/*String*/
-
-void tred2(int n, double tol, double *a[], double d[], double e[])
-{
+//Редукция Хаусхолдера действительной симметричной матрицы a[1...n][1...n]
+// на выходе получается трехдиагональная матрица
+// d[1...n] возвращает диагональ трехдиагональной матрицы. 
+// e[1...n] возвращает внедиагональные элементы, причем e[1]=0. 
+void tred2(int n, double tol, double *a[], double d[], double e[]) {
     static int i, j, k, l, nm, inm, jnm, knm;
     static double f, g, h, h1;
     nm = n;
@@ -459,6 +461,9 @@ skip:           d[i] = h;
     }
 }/*'eop'*/
 
+//Вычиcление coбcтвенных знaчений и coбcтвенных вектopoв матрицы a[1...n][1...n]
+// d[1...n] Нa выхoде coдеpжит coбcтвенные знaчения этoй мaтpицы в вoзpacтaющем  пopядке. 
+// e[1...n] мaccив paзмеpнocти N, пocледние N-1 элементoв кoтopoгo нa  вхoде coдеpжaт внедиaгoнaльные элементы  cимметpичеcкoй тpехдиaгoнaльнoй мaтpицы, величинa  Е(1) пpoизвoльнa.
 void imtql2(int n, double macheps, double *a[], double d[], double e[])
 {
     static int i, i1, j, k, l, m, nm, i1nm, jnm;
@@ -553,15 +558,15 @@ double nRef(double y)
     }
 }/*nRef*/
 
-double fi_p(int k, double y)
-{
+//элементарная гармоника
+double fi_p(int k, double y) {
     double nr;
     nr = 1 / sqrt((ymax - ymin) / 2);
     return nr * sin((k + 1) * M_PI * (y - ymin) / (ymax - ymin));
 }/*fi*/
 
-double fid2_p(int k, double y)
-{
+//нормированная гармоника
+double fid2_p(int k, double y) {
     double nr;
     nr = 1 / sqrt((ymax - ymin) / 2);
     return -nr * sqr(   (k + 1) * M_PI / (ymax - ymin)  ) *
@@ -1730,7 +1735,7 @@ Mexit:;
     if (err != 0 )FastWriteA(str, 10, 10, clBlack, clRed);
 }/*Planar1*/
 
-//������� 
+//функция отрисовки линий уровня для заданного массива
 int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
            int XoX, int YoY) {
     int err,
@@ -1761,8 +1766,8 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
     ramxl = 1;           /*Adding 13.10.91*/
     ramyl = 1;
     MapMax = MapMin = Map[1][1];
-    //����� ��������� ���������� ����������� � ��������
-    //�� ����� �������, ������ ��� �������� ������ 32000
+    //поиск максимума показателя преломления и минимума
+    //не очень понятно, потому что максимум всегда 32000
     for (j = 0; j < ramyr; j++) {
         for (i = 0; i < ramxr; i++) {
             if (Map[j][i] > MapMax) MapMax = Map[j][i];
@@ -1770,13 +1775,13 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
         }
     }
 
-    //�������� ������ �������
+    //нарисуем черный квадрат
     setcolor(clWhite);
     setfillstyle(0, clBlack);
     rect(ramxl + XoX, ramyl + YoY, ramxr + XoX, ramyr + YoY);
 
     /* ...........  USER CODE  ............. */
-    //��� ��������� ���������� �����������
+    //шаг изменения показателя преломления
     HLevel = (MapMax - MapMin) / NLevel;
     /*
         DebugMain =1;
@@ -1788,8 +1793,8 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
     levgen0 = HLevel;
     //
     for (levgen = levgen0 + MapMin; levgen < MapMax; levgen += HLevel)  {
-        //� ���� ���������� ���������� ����������� �� ����� ����� ������ ����
-        //������ ����� ��� �������
+        //в ходе увеличения показатель преломления не может стать больше нуля
+        //скорее всего это костыль
         if (levgen < 0) break;
         im = ip = 0;
         for (jj = 0; jj < 3; jj++)    buf3[jj] = Map[jj];
@@ -1804,9 +1809,10 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
                 {
                     stcon = stcon + 1.0;
                     ip = i + 1; im = i - 1;
-                    kk  = (int)buf3[i1][i] ;
-                    if ((kk - levgen)*LtGtLevgen <= 0 )
-                    {
+                    kk  = (int)buf3[i1][i];
+                    //если текущий показатель преломления меньше рассматриваемого уровня
+                    if ((kk - levgen)*LtGtLevgen <= 0 ) {
+                        //запишем каждую из соседних клеток в отдельную переменную
                         k00 =  (int)buf3[i0][im];
                         k01 =  (int)buf3[i0][i] ;
                         k02 =  (int)buf3[i0][ip];
@@ -1815,6 +1821,9 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
                         k20 =  (int)buf3[i2][im];
                         k21 =  (int)buf3[i2][i] ;
                         k22 =  (int)buf3[i2][ip];
+                        //пронормируем все соседние клетки:
+                        //0 - там больше уровня
+                        //1 - там меньше уровня
                         if ((k00 - levgen)*LtGtLevgen > 0) k00 = 0; else k00 = 1;
                         if ((k01 - levgen)*LtGtLevgen > 0) k01 = 0; else k01 = 1;
                         if ((k02 - levgen)*LtGtLevgen > 0) k02 = 0; else k02 = 1;
@@ -1824,7 +1833,9 @@ int Contur(int  *Map[N_MAP_STR], int ramxr , int ramyr, int NLevel,
                         if ((k21 - levgen)*LtGtLevgen > 0) k21 = 0; else k21 = 1;
                         if ((k22 - levgen)*LtGtLevgen > 0) k22 = 0; else k22 = 1;
 
+                        // равно 1, когда хотя бы одна соседняя клетка меньше уровня
                         k33 = k00 * k01 * k02 * k10 * k12 * k20 * k21 * k22;
+                        // общее число клеток меньше уровня
                         k11 = k00 + k01 + k02 + k10 + k12 + k20 + k21 + k22;
                         if (k11 == 1 || k11 == 2 || k11 == 3 )
                         {
@@ -1868,7 +1879,7 @@ Mexit:
 
 
 
-
+//функция показателя преломления от двухмерных координат (x,y)
 double nRef_2D(double x, double y) {
     double r;
     r = sqrt(sqr(x) + sqr(y));
@@ -1894,11 +1905,12 @@ double nRef_2D(double x, double y) {
     }
 }/*nRef*/
 
+// возвращает 0 при k != k1 и какое-то значение, когда они равны
 double Mat_elT(int k, int k1) {
     double a, b; int i;
-
-    if (k != k1) 
+    if (k != k1) {
         return 0;
+    }
     else {
         a = b = 0; 
         for (i = 0; i < N_tot; i++) {
@@ -1910,12 +1922,17 @@ double Mat_elT(int k, int k1) {
 }/*Mat_elT*/
 double Mat_elN(int k, int k1)
 {
-    double a; int i, i1, j, j1, m, m1;
+    double a; 
+    int i, i1, j, j1, m, m1;
     i = ind[k].i; i1 = ind[k1].i;
     j = ind[k].j; j1 = ind[k1].j;
-    a = 0; for (m = 0; m < N_tot; m++)for (m1 = 0; m1 < N_tot; m1++)
+    a = 0; 
+    for (m = 0; m < N_tot; m++) {
+        for (m1 = 0; m1 < N_tot; m1++) {
             a += Fi_bas[i][m] * Fi_bas[j][m1] * n_xy[m][m1] *
                  Fi_bas[i1][m] * Fi_bas[j1][m1];
+        }
+    }
     return a * h_x * h_y;
 }/*Mat_elN*/
 double ModeFun_2d(int m, double *HE[], int i, int j)
@@ -1970,7 +1987,7 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     hrx = 1;
     hry = 1;
 
-    //��� x
+    //ось x
     for (x = xmin; x < xmax; x += hrx) {
         y = 0;
         ix = x * msx + XoX;
@@ -1981,7 +1998,7 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
 
     }/*x*/
 
-    //��� y
+    //ось y
     for (y = ymin; y < ymax; y += hry) {
         x = 0;
         ix = x * msx + XoX;
@@ -1995,7 +2012,7 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     h_y = hy = hry / 10;
     N = 0;
 
-    //���������� ����������� �� �����������
+    //показатель преломления на поверхности
     for (y = ymin; y < ymax; y += hy) {
         x = nRef_2D(0, y);
         ix = x * msx + XoX;
@@ -2004,14 +2021,14 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
         N++;
     }/*y*/
     
-    //������� ����� �������� � �������
+    //запишем число проходов в счетчик
     N_tot = N;
 
-    /*���������� ��������*/
+    /*прорисовка контуров*/
     //   if(((count_tim/nt)/1)*1==(count_tim/nt)){
     NyMap = 300; 
-    NxMap = NyMap * (xMax - xMin) / (yMax - yMin); /*������ ������� ��� �������*/
-    //������� ������ ��� ���������� ����������� � ������ �����
+    NxMap = NyMap * (xMax - xMin) / (yMax - yMin); /*размер области для контура*/
+    //выделим память под показатели преломления в каждой точке
     for (i = 0; i <= NyMap + 2; i++) {
         if ((Map[i] = (int *)calloc( sizeof(int), NxMap + 2 )) == NULL)
         {
@@ -2024,7 +2041,7 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     xhMap = (xMax - xMin) / NxMap;
     k = 0;
 
-    //������������ ���������� �����������
+    //максимальный показатель преломления
     maxDens = 0;
     for (i = 0; i < NyMap; i++) {
         //zz=i*zhMap+zMin;
@@ -2036,7 +2053,7 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
         }/*j*/
     }/*i*/
 
-    //�������� Map �������������� �� ��������� ������������ �����������. ���� �������� = 32000
+    //заполним Map нормированными по максимуму показателями преломления. Макс значение = 32000
     for (i = 0; i < NyMap; i++) {
         //zz=i*zhMap+zMin;
         y = i * yhMap + yMin;
@@ -2048,10 +2065,11 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
         }/*j*/
     }/*i*/
 
-    //���������
+    //функция отрисовки контура показателя преломления
     iX = 0; iY = 0;
-    Contur(  Map, NxMap, NyMap, 10, iX, iY); // ���� �� �������
+    Contur(Map, NxMap, NyMap, 10, iX, iY); // цикл по времени
 
+    //напишем число итераций по оси y
     sprintf(str, "[N=%2d] ",  N);
     FastWriteA (str, 4, 20, clBlack, clWhite);
 
@@ -2083,39 +2101,34 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     }/*k,l*/
     */
 
-    if ((n_y = (double *)calloc( sizeof(double), N + 1 )) == NULL)
-    {
+    //раздача памяти - массив из N+1 эл-тов'
+    if ((n_y = (double *)calloc( sizeof(double), N + 1 )) == NULL) {
         sprintf(str, "No memory for n_y[] ");
         err = 1; goto Mexit ;
     }
 
-    if ((f = (double *)calloc( sizeof(double), N + 1 )) == NULL)
-    {
+    if ((f = (double *)calloc( sizeof(double), N + 1 )) == NULL) {
         sprintf(str, "No memory for f[] ");
         err = 1; goto Mexit ;
     }
-    if ((yy1 = (double *)calloc( sizeof(double), N + 1 )) == NULL)
-    {
+    if ((yy1 = (double *)calloc( sizeof(double), N + 1 )) == NULL) {
         sprintf(str, "No memory for yy1[] ");
         err = 1; goto Mexit ;
     }
-    for (i = 0; i <= N; i++)
-    {
-
-        if ((n_xy[i] = (double *)calloc( sizeof(double), N + 1 )) == NULL)
-        {
+    // массив (N+1)x(N+1)
+    // n_xy - матрица квадратных корней из показателя преломления в этой точке
+    for (i = 0; i <= N; i++) {
+        if ((n_xy[i] = (double *)calloc( sizeof(double), N + 1 )) == NULL) {
             sprintf(str, "No memory for n_y[] ");
             err = 1; goto Mexit ;
         }
     }/*i*/
 
-
+    //заполним yy1 и n_xy
     i = 0;
-    for (y = ymin; y < ymax; y += hy)
-    {
+    for (y = ymin; y < ymax; y += hy) {
         yy1[i] = y; j = 0;
-        for (x = xmin; x < xmax; x += hx)
-        {
+        for (x = xmin; x < xmax; x += hx) {
             n_xy[j][i] = sqr(nRef_2D(x, y));
             j++;
         }
@@ -2124,43 +2137,36 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     M = Mtot;   lam = 1.0;   klam = 2 * M_PI / lam;
     M_bas = M * M;
     /*===============================*/
-
-
-
-    for (i = 0; i <= M_bas; i++)
-    {
-        if ((HE[i] = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL)
-        {
+    //раздача памяти под HE и Fi_bas - двухмерные массивы (M * M)x(M * M)
+    for (i = 0; i <= M_bas; i++) {
+        if ((HE[i] = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL) {
             sprintf(str, "No memory for HE[] ");
             err = 1; goto Mexit ;
         }
-        if ((Fi_bas[i] = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL)
-        {
+        if ((Fi_bas[i] = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL) {
             sprintf(str, "No memory for Fi_bas[] ");
             err = 1; goto Mexit ;
         }
-
-
     }/*i*/
 
-    if ((DLbuf = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL)
-    {
+    // DLbuf - одномерный массив длиной (M * M)
+    if ((DLbuf = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL) {
         sprintf(str, "No memory for DLbuf[] ");
         err = 1; goto Mexit ;
     }
-
+    // D - одномерный массив длиной (M * M)
     if ((D = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL)
     {
         sprintf(str, "No memory for D ");
         err = 1; goto Mexit ;
     }
-
+    // Cbuf - одномерный массив длиной (M * M)
     if ((Cbuf = (double *)calloc( sizeof(double), M_bas + 1 )) == NULL)
     {
         sprintf(str, "No memory for Cbuf ");
         err = 1; goto Mexit ;
     }
-
+    // ind - одномерный массив длиной (M * M) из струкуры с полями i,j
     if (( ind = (IJ *)calloc( sizeof(IJ), M_bas + 1 )) == NULL)
     {
         sprintf(str, "No memory for D ");
@@ -2168,30 +2174,36 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     }
 
     /*==============================================================*/
-    for (k = 0; k < M; k++)
-        for (i = 0; i < N; i++)Fi_bas[k][i] = fi_p(k - 1, yy1[i]);
+    //Fi_bas - значения каждой гармоники в каждой точке по оси x
+    for (k = 0; k < M; k++) {
+        for (i = 0; i < N; i++) {
+            Fi_bas[k][i] = fi_p(k - 1, yy1[i]);
+        }
+    }
 
-    k = 0; for (i = 0; i < M; i++)for (j = 0; j < M; j++)
-        {
+    k = 0;
+    //ind = [{i:0, j:0}, {i:0, j:1}, .. , {i:0, j:M-1}, {i:1, j:0}, .. , {i:M-1, j:M-1}]
+    for (i = 0; i < M; i++) {
+        for (j = 0; j < M; j++) {
             ind[k].i = i;
             ind[k].j = j;
             k++;
         }
+    }
+    //выведем размерность самой большой матрицы 
     sprintf(str, "M_bas= %d  k= %d ", M_bas, k);
     FastWriteA(str, 1, 30, clBlack, clWhite);
 
     /*==============================================================*/
     //  return;
 
-
-
     for (i = 1; i <= M_bas; i++)
     {
         sprintf(str, "i= %d ", i);
         FastWriteA(str, 3, 30, clBlack, clWhite);
 
-        for (j = 1; j <= i; j++)
-        {
+        //заполним матрицу HE - симметрично относительно диагонали
+        for (j = 1; j <= i; j++) {
             HE[j][i] = HE[i][j] = Mat_elT(i - 1, j - 1) + sqr(klam) * Mat_elN(i - 1, j - 1);
         }/*j*/
     }/*i*/
@@ -2199,21 +2211,23 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
 
     tred2(M_bas, 1.0e-10, HE, D, DLbuf);
     imtql2(M_bas, 1.0e-8, HE, D, DLbuf);
+    //D - массив собственных чисел HE
 
-    for (i = 1; i <= M_bas; i++)
-    {
+    //отбросим первую строку и колонку
+    for (i = 1; i <= M_bas; i++) {
         D[i - 1] = D[i];
-        for (j = 1; j <= M_bas; j++)
-        {
+        for (j = 1; j <= M_bas; j++) {
             HE[i - 1][j - 1] = HE[i][j];
         }/*j*/
     }/*i*/
+
+    //выведем собственные числа, а также запишем их в d.txt
     Fwr = fopen("d.txt", "wt");
-    k = 0; setcolor(clBlack);
-    for (i = M_bas - 1; i >= 0; i--)
-    {
+    k = 0;
+    setcolor(clBlack);
+    for (i = M_bas - 1; i >= 0; i--) {
         nm = sqrt(fabs(D[i])) / klam;
-        if (nm > nmax  || nm < nsubstrat )break;
+        if (nm > nmax  || nm < nsubstrat) break;
         sprintf(str, "[%2d]    nm=%f ",  k, nm);
         FastWriteA (str, 4 + (M_bas - i) * 2, 20, clBlack, clWhite);
 
@@ -2224,37 +2238,37 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
         k++;
     }
     fclose(Fwr);
+
+    //найдем максимальное значение модовой функции
     maxDens = 0; mm = 0;
-    for (i = 0; i < NyMap; i++)
-    {
+    for (i = 0; i < NyMap; i++) {
         i1 = i * yhMap / hy;
-        for (j = 0; j < NxMap; j++)
-        {
+        for (j = 0; j < NxMap; j++) {
             j1 = j * xhMap / hx;
-            b = ModeFun_2d(mm, HE, j1, i1); b = b * b;
-            if (b > maxDens)maxDens = b;
+            b = ModeFun_2d(mm, HE, j1, i1); 
+            b = b * b;
+            if (b > maxDens) maxDens = b;
         }/*j*/
     }/*i*/
 
+    //построим карту уровней значений функции
     k = 0;
-    for (i = 0; i < NyMap; i++)
-    {
+    for (i = 0; i < NyMap; i++) {
         i1 = (i) * yhMap / hy;
-        for (j = 0; j < NxMap; j++)
-        {
+        for (j = 0; j < NxMap; j++) {
             j1 = (j) * xhMap / hx;
             b = ModeFun_2d(mm, HE, j1, i1); b = b * b;
             b = (b / maxDens) * 32000;
             Map[(NyMap - 1) - i][j] = (int)b;
-
         }/*j*/
     }/*i*/
     iX = 0; iY = 0;
     //======================
+    // нарисуем этот контур
+    Contur(Map, NxMap, NyMap, 10, iX, iY); // цикл по времени
 
-    Contur(  Map, NxMap, NyMap, 10, iX, iY); // ���� �� �������
-    for (i = 0; i < N_tot; i++)
-    {
+    //нарисуем сечение функции в середине
+    for (i = 0; i < N_tot; i++) {
         x = xmin + hx * i;
         y = ModeFun_2d(mm, HE, N_tot / 2, i) * 100;
         ix = x * msx + XoX;
@@ -2265,12 +2279,8 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
     sprintf(str, "maxDens=%e ", maxDens);
     FastWriteA (str, 6, 40, clBlack, clWhite);
 
-
-
-
-
-
     return;
+    //никогда не исполняемый код
 
     for (i = 0; i < M; i++)Cbuf[i] = HE[i][M - 1];
 
@@ -2286,12 +2296,16 @@ void __fastcall TForm1::Waveguide_2DClick(TObject *Sender)
 
 
     Plan1 = 1;
-Mexit:;
+
+    //освобождение памяти
+    Mexit:;
     free(n_y);
     free(f);
     free(yy1);
 
-    for (i = 0; i <= M; i++)free(HE[i]);
+    for (i = 0; i <= M; i++) {
+        free(HE[i]);    
+    }
     free(DLbuf);
     free(D);
 
