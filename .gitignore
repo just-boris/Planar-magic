@@ -1,4 +1,2 @@
 *.~*
-/Coupling.exe
-/d.txt
-/CPL.EXE
+*.csv

@@ -194,7 +194,7 @@ void dump(double** Arr, int maxX, int maxY, char* filename) {
             if(j > 0) {
                 fprintf(Fwr, ",");
             }
-            fprintf(Fwr, "%d", Arr[j][i]);
+            fprintf(Fwr, "%f", Arr[j][i]);
         }
     }
     fclose(Fwr);
@@ -673,7 +673,7 @@ void __fastcall TForm1::PlanarClick(TObject *Sender)
       ix=x*msx+XoX;
       iy=bottom-(y*msy+YoY);
       putpixel(ix,iy,clBlack);
-     }/*y*/
+     }
     */
 
     /*
@@ -686,7 +686,7 @@ void __fastcall TForm1::PlanarClick(TObject *Sender)
      sprintf(str,"%d %d %e",l,k,a);
      FastWriteA(str,1+2*i,30,clBlack, clWhite);
      i++;
-    }/*k,l*/
+    }
     */
 
     if ((n_y = (double *)calloc( sizeof(double), N + 1 )) == NULL)
